@@ -1,4 +1,5 @@
 import axios from "axios";
+import toast from 'react-hot-toast'; 
 
 // Function to handle menu item deletion
 const handleDeleteMenuItem = async (restaurantId, menuItemId) => {
@@ -10,7 +11,7 @@ const handleDeleteMenuItem = async (restaurantId, menuItemId) => {
     window.location.reload();
   } catch (error) {
     console.error('Error deleting menu item:', error);
-    alert('Failed to delete menu item');
+    toast.error('Failed to delete menu item');
   }
 };
 

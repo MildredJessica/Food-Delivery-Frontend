@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import toast from 'react-hot-toast';
+import axios from 'axios';
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -14,35 +16,76 @@ const Register = () => {
             street: '',
             city: '',
             state: '',
-            country: 'US'
-        }
+            country: 'NG'
+        },
+        avatar: ''
     });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [step, setStep] = useState(1); // Multi-step form
     const [showAddress, setShowAddress] = useState(false); // Toggle for address section
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [avatarPreview, setAvatarPreview] = useState('');
     const { register } = useAuth();
     const navigate = useNavigate();
+    const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
+    const [countries, setCountries] = useState([]);
+    const [loadingCountries, setLoadingCountries] = useState(true);
 
+    
+    useEffect(() =>{
+        fetchCountries();
+    }, [])
+
+    const fetchCountries = async() =>{
+        try {
+            // Fetch all countries
+            const response = await axios.get('https://restcountries.com/v3.1/independent?status=true');
+            const sortedCountries = response.data
+                .map(country => ({
+                    code: country.cca2,
+                    name: country.name.common
+                }))
+                .sort((a, b) => a.name.localeCompare(b.name));
+            setCountries(sortedCountries);
+        } catch(error){
+            console.error('Error fetching countries:', error);
+            // Fallback to a basic list if API fails
+            setCountries([
+                {code: 'US', name: 'United States'},
+                {code: 'GB', name: 'United Kingdom'},
+                {code: 'NG', name: 'Nigeria'},
+            ])
+        } finally {
+            setLoadingCountries(false);
+        }
+    };
+
+    
     const handleChange = (e) => {
         const { name, value } = e.target;
     
-    if (name.includes('.')) {
-      const [parent, child] = name.split('.');
-        setFormData({
-        ...formData,
-        [parent]: {
-          ...formData[parent],
-          [child]: value
+        if (name.includes('.')) {
+            const [parent, child] = name.split('.');
+                setFormData({
+                ...formData,
+                [parent]: {
+                ...formData[parent],
+                [child]: value
+                }
+            });
+    
+        } else {
+            setFormData({
+                ...formData,
+                [name]: value
+            });
         }
-      });
-    } else {
-      setFormData({
-        ...formData,
-        [name]: value
-      });
-    }
+        if(name === 'avatar' && value)
+        setAvatarPreview(value);
     };
+
 
     const validateStep1 = () => {
         if (!formData.name.trim()) {
@@ -79,6 +122,16 @@ const Register = () => {
         return true;
     };
 
+    const validateAvatarUrl = (url) => {
+        if(!url) return true;
+        try{
+            new URL(url);
+            return true;
+        } catch{
+            return false;
+        }
+    };
+
     const nextStep = () => {
         if (validateStep1()) {
         setStep(2);
@@ -94,6 +147,11 @@ const Register = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+
+        if (formData.avatar && !validateAvatarUrl(formData.avatar)){
+            setError('Please enter a valid url for avatar');
+            return;
+        }
 
         // Final validation
         if (!validateStep1()) {
@@ -116,11 +174,13 @@ const Register = () => {
             
             if (result.success) {
                 // Show success message
-                alert('Registration successful! Redirecting to login...');
-                
-                // Redirect to login page after 1.5 seconds
+                // toast.success('Registration successful! Redirecting to login...');
+                toast.success('Registration successful! Welcome to FoodExpress, '+
+                    'where you can buy mouth watering dishes at an affordable price');
+                // Redirect to homepage page after 1.5 seconds
                 setTimeout(() => {
-                    navigate('/login');
+                    // navigate('/login');
+                    navigate('/');
                 }, 1500);  
             } else {
                 setError(result.message || 'Registration failed');
@@ -154,7 +214,7 @@ const Register = () => {
                     to="/login"
                     className="font-medium text-orange-600 hover:text-orange-500"
                     >
-                    sign in to your existing account
+                    Sign in to your existing account
                     </Link>
                 </p>
                 </div>
@@ -195,6 +255,42 @@ const Register = () => {
                         <div className="space-y-6">
                             <h3 className="text-lg font-medium text-gray-900">Basic Information</h3>
                             
+                            <div>
+                                <label htmlFor='avatar' className="block text-sm font-medium text-gray-700">
+                                    Profile Picture URL(Optional)
+                                </label>
+                                <div className="mt-1 flex items-center space-x-4">
+                                    <div className="flex-1">
+                                        <input 
+                                            id="avatar"
+                                            name='avatar'
+                                            type="url"
+                                            className="appearance-none block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+                                            placeholder="https://example.com/avatar.jpg"
+                                            value={formData.avatar}
+                                            onChange={handleChange}
+                                        />
+                                        <p className='text-xs text-gray-500 mt-1'>
+                                            Enter a URL to your proffile picture(optional)
+                                        </p>
+                                    </div>
+                                    {/* Avatar Preview */}
+                                    {avatarPreview && (
+                                        <div className="flex-shrink-0">
+                                            <img
+                                                src={avatarPreview}
+                                                alt='Avatar Perview'
+                                                className='w-16 h-16 rounded-full object-cover border-2 border-gray-200'
+                                                onError={(e) =>{
+                                                    e.target.onerror = null;
+                                                    e.target.src = 'https://via.placeholder.com/64?text=Error'
+                                                }}
+                                            />
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label htmlFor="name" className="block text-sm font-medium text-gray-700">
@@ -250,16 +346,36 @@ const Register = () => {
                                     <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                                         Password *
                                     </label>
-                                    <input
-                                        id="password"
-                                        name="password"
-                                        type="password"
-                                        required
-                                        className="mt-1 appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
-                                        placeholder="Enter password"
-                                        value={formData.password}
-                                        onChange={handleChange}
-                                    />
+                                    <div className='relative mt-1'>
+                                        <input
+                                            id="password"
+                                            name="password"
+                                            type={isFirefox ? (showPassword ? "text" : "password") : "text"}
+                                            style={!isFirefox ? {WebkitTextSecurity : showPassword ? 'none' : 'disc'} : {}}
+                                            required
+                                            className="appearance-none block w-full px-3 py-3 pr-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+                                            placeholder="Enter password"
+                                            value={formData.password}
+                                            onChange={handleChange}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            className='absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600'
+                                        >
+                                            {showPassword ? (
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 4.411m0 0L21 21" />
+                                                </svg>
+                                            ) : (
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                </svg>
+                                            )}
+                                        </button>
+                                    </div>
+                                    
                                     <p className="text-xs text-gray-500 mt-1">
                                         Must be at least 6 characters
                                     </p>
@@ -269,16 +385,35 @@ const Register = () => {
                                     <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
                                         Confirm Password *
                                     </label>
-                                    <input
+                                    <div className="relative mt-1">
+                                        <input
                                         id="confirmPassword"
                                         name="confirmPassword"
-                                        type="password"
+                                        type={showConfirmPassword ? "text": "password"}
                                         required
                                         className="mt-1 appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
                                         placeholder="Confirm password"
                                         value={formData.confirmPassword}
                                         onChange={handleChange}
-                                    />
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                            className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                                        >
+                                            {showConfirmPassword ? (
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 4.411m0 0L21 21" />
+                                                </svg>
+                                            ) : (
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                </svg>
+                                            )}
+                                        </button>
+                                    </div>
+                                    
                                 </div>
                             </div>
 
@@ -396,9 +531,10 @@ const Register = () => {
                                         }`} />
                                     </button>
                                 </div>
+                                
                             </div>
 
-                            {/* Address Form */}
+                            {/* Address Form */}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
                             {showAddress && (
                                 <div className="space-y-4 bg-gray-50 p-6 rounded-lg border">
                                     <h4 className="font-medium text-gray-900">Delivery Address</h4>
@@ -457,34 +593,21 @@ const Register = () => {
                                         Country
                                         </label>
                                         <select
-                                        id="country"
-                                        name="address.country"
-                                        value={formData.address.country}
-                                        onChange={handleChange}
-                                        className="mt-1 appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+                                            id="country"
+                                            name="address.country"
+                                            value={formData.address.country}
+                                            onChange={handleChange}
+                                            className="mt-1 appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+                                            disabled={loadingCountries}
                                         >
-                                        <option value="US">United States</option>
-                                        <option value="CA">Canada</option>
-                                        <option value="UK">United Kingdom</option>
-                                        <option value="AU">Australia</option>
-                                        <option value="IN">India</option>
-                                        <option value="DE">Germany</option>
-                                        <option value="FR">France</option>
-                                        <option value="JP">Japan</option>
-                                        <option value="CN">China</option>
-                                        <option value="BR">Brazil</option>
-                                        <option value="ZA">South Africa</option>
-                                        <option value="NG">Nigeria</option>
-                                        <option value="MX">Mexico</option>
-                                        <option value="RU">Russia</option>
-                                        <option value="IT">Italy</option>
-                                        <option value="ES">Spain</option>
-                                        <option value="KR">South Korea</option>
-                                        <option value="TR">Turkey</option>
-                                        <option value="SA">Saudi Arabia</option>
-                                        <option value="AR">Argentina</option>
-                                        <option value="Other">Other</option>
+                                            <option value="">Select a country</option>
+                                            {countries.map(({code, name}) =>(
+                                                <option key={code} value={code}>{name}</option>
+                                            ))}
                                         </select>
+                                        {loadingCountries && (
+                                            <p className="text-sm text-gray-500 mt-1">Loading countries...</p>
+                                        )}
                                     </div>
                                 </div>
                             )}

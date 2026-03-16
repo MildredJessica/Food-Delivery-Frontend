@@ -2,6 +2,7 @@
 import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 const PaystackPayment = ({ email, amount, orderId, onSuccess, onClose }) => {
     const [loading, setLoading] = useState(false);
@@ -47,17 +48,17 @@ const PaystackPayment = ({ email, amount, orderId, onSuccess, onClose }) => {
         setPaymentOption('online');
         
         if (!scriptLoaded) {
-            alert('Payment system is still loading. Please try again.');
+            toast.error('Payment system is still loading. Please try again.');
             return;
         }
 
         if (!window.PaystackPop) {
-            alert('Payment system not available. Please refresh the page.');
+            toast.error('Payment system not available. Please refresh the page.');
             return;
         }
         
         if (!reference) {
-            alert('Generating payment reference. Please try again.');
+            toast.error('Generating payment reference. Please try again.');
             return;
         }
 
@@ -74,7 +75,7 @@ const PaystackPayment = ({ email, amount, orderId, onSuccess, onClose }) => {
                 console.log('Transaction status:', response.status);
                 
                 // Show success message
-                alert('Payment successful! Verifying your payment...');
+                toast.success('Payment successful! Verifying your payment...');
                 
                 // Call verify function with the response
                 verifyPayment(response.reference);
@@ -128,7 +129,7 @@ const PaystackPayment = ({ email, amount, orderId, onSuccess, onClose }) => {
                 onSuccess(response.data.data);
                 
                 // Show success message
-                alert('Payment successful! Your order has been confirmed.');
+                toast.success('Payment successful! Your order has been confirmed.');
                 
                 // Navigate to Success page
                 navigate('/payment-success', {
@@ -138,20 +139,20 @@ const PaystackPayment = ({ email, amount, orderId, onSuccess, onClose }) => {
                       }
                 });
             } else {
-                alert('Payment verification failed. Please contact support.');
+                toast.error('Payment verification failed. Please contact support.');
             }
         } catch (error) {
             console.error('Verification error:', error.response?.data || error.message);
             
             // Check if payment was actually successful but verification failed
             if (error.response?.status === 404) {
-                alert('Payment reference not found. Please contact support with your reference: ' + paymentReference);
+                toast.error('Payment reference not found. Please contact support with your reference: ' + paymentReference);
             } else if (error.response?.status === 500) {
-                alert('Server error during verification. Your payment may still be successful. Please check your orders page.');
+                toast.error('Server error during verification. Your payment may still be successful. Please check your orders page.');
                 // Navigate to orders to check status
                 navigate('/orders');
             } else {
-                alert('Payment verification failed. Please contact support.');
+                toast.error('Payment verification failed. Please contact support.');
             }
         } finally {
             setLoading(false);
@@ -188,7 +189,7 @@ const PaystackPayment = ({ email, amount, orderId, onSuccess, onClose }) => {
     // Copy to clipboard function
     const copyToClipboard = (text) => {
         navigator.clipboard.writeText(text);
-        alert('Copied to clipboard!');
+        toast.success('Copied to clipboard!');
     };
 
     // Bank Transfer Details View

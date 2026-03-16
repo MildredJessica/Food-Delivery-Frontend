@@ -17,7 +17,7 @@ const Profile = () => {
       street: '',
       city: '',
       state: '',
-      country: 'US'
+      country: 'NG'
     },
     avatar: ''
   });
@@ -407,6 +407,7 @@ const Profile = () => {
                     <option value="UK">United Kingdom</option>
                     <option value="AU">Australia</option>
                     <option value="IN">India</option>
+                    <option value="NG">NIGERIA</option>
                   </select>
                 </div>
               </div>

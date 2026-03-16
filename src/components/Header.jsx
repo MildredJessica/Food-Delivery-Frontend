@@ -19,7 +19,6 @@ const Header = () => {
         await logout();
         setIsDropdownOpen(false);
         navigate('/');
-        // console.log('✅ Logout successful, cart cleared');
       } catch (error) {
         console.error('Logout error:', error);
       }
@@ -35,41 +34,49 @@ const Header = () => {
         else if (hour < 18)
           greeting = 'Good afternoon';
         else
-          greeting = 'Good evening';
-        // const firstName = user.name.split(' ')[0];
-      
+          greeting = 'Good evening';      
         return `${greeting}, ${user.name}`;
       }
       return 'Hello, Guest';
     }; 
+    // Determine restaurant link based on role
+    const getRestaurantLink = () => {
+      if (user?.role === 'restaurant_owner') {
+        return '/restaurant-owner/dashboard';
+      }
+      return '/'; // Customers and admins see all restaurants
+    };
+
+    // Determine if cart should be shown
+    const showCart = user?.role !== 'restaurant_owner'; // Hide cart for restaurant owners
+
     return (
       <header className="bg-white shadow-sm border-b sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <div className='flex items-center space-x-8'>
-              <Link to="/" className="flex items-center space-x-2">
+              <Link to={getRestaurantLink()} className="flex items-center space-x-2">
                 <div className="w-8 h-8 bg-linear-to-r from-orange-500 to-orange-600 rounded-full"></div>
-                <span className="text-xl font-bold text-gray-900 hidden sm:inline">FoodExpress</span>
+                <span className="text-xl font-bold text-gray-900 hidden sm:inline">
+                  {user?.role === 'restaurant_owner' ? 'My Restaurant' : 'Food Express'}
+                </span>
               </Link>
               <nav className=''>
-                  {/* <Link to="/" className={`text-sm font-medium ${location.pathname === '/' ? 'text-orange-600' : 'text-gray-700 hover:text-orange-500'}`}>
-                    Restaurants
-                  </Link> */}
                   {isAuthenticated && (
                     <>
                       {/* Role-based navigation */}
-                       <Link to="/orders" className={`text-sm font-medium pl-8 ${location.pathname === '/orders' ? 'text-orange-600' : 'text-gray-700 hover:text-orange-500'} transition-colors`}>
+                      <Link to="/orders" className={`text-sm font-medium pl-8 ${location.pathname === '/orders' ? 'text-orange-600' : 'text-gray-700 hover:text-orange-500'} transition-colors`}>
                         My Orders
                       </Link>
                       {user?.role === 'restaurant_owner' && (
                         <Link to="/restaurant-owner/dashboard" className="text-sm font-medium pl-8 text-gray-700 hover:text-orange-500 transition-colors">
-                          My Restaurants
+                          Dashboard
                         </Link>
                       )}
                       {user?.role === 'admin' && (
-                        <Link to="/admin/dashboard" className="text-sm font-medium pl-8 text-gray-700 hover:text-orange-500 transition-colors">
-                          Admin Dashboard
+                        <Link to="/admin/dashboard" className={`text-sm font-medium pl-8 ${location.pathname.startsWith('/admin') ? 'text-orange-600'  : 'text-gray-700 hover:text-orange-500' } transition-colors`}>
+                          Admin
                         </Link>
                       )}
                     </>
@@ -81,17 +88,18 @@ const Header = () => {
             {/* Right Side Actions */}
             <div className="hidden md:flex items-center space-x-6">
               {/* Cart Icon- Always Visible */}
-              <Link to="/cart" className="relative p-2 text-gray-700 hover:text-orange-500 transition-colors" title='View Cart'>
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-                {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-orange-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center font-bold">
-                    {cartCount}
-                  </span>
-                )}
+              {showCart && (
+                <Link to="/cart" className="relative p-2 text-gray-700 hover:text-orange-500 transition-colors" title='View Cart'>
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                  {cartCount > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-orange-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center font-bold">
+                      {cartCount}
+                    </span>
+                  )}
                 </Link>
-                  
+              )}
               
               {isAuthenticated ? (
                 /* User Is Logged In */
