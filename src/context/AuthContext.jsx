@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
-import { cartUtils } from '../../../backend/src/utils/cart';
+import { cartUtils } from '../utils/cart.js';
 
 // Create Auth Context
 const AuthContext = createContext();
