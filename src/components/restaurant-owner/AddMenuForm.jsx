@@ -14,6 +14,7 @@ const AddMenuForm = ({ restaurantId, onClose, onSuccess }) => {
   const [error, setError] = useState('');
   const [imageSource, setImageSource] = useState('file'); // 'file' or 'link'
   const [imageUrl, setImageUrl] = useState('');
+  const backend_url = import.meta.env.VITE_BACKEND_URL;
 
   const compressImage = (file) => {
     return new Promise((resolve) => {
@@ -106,7 +107,7 @@ const AddMenuForm = ({ restaurantId, onClose, onSuccess }) => {
     }
     try {
       const response = await axios.post(
-        `http://localhost:3000/api/restaurant-owner/${restaurantId}/menu`,
+        `${backend_url}/api/restaurant-owner/${restaurantId}/menu`,
         formData
       );
       

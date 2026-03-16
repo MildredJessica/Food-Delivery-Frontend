@@ -13,6 +13,8 @@ const PaystackPayment = ({ email, amount, orderId, onSuccess, onClose }) => {
     const [paymentOption, setPaymentOption] = useState(null);
     const navigate = useNavigate();
     const paystackInitialized = useRef(false);
+    const backend_url = import.meta.env.VITE_BACKEND_URL;
+
     
     const PAYSTACK_PUBLIC_KEY = 'pk_live_e2f0d56a2bd932f09949b23e860a1dc486d9be42';
 
@@ -114,7 +116,7 @@ const PaystackPayment = ({ email, amount, orderId, onSuccess, onClose }) => {
             console.log('Verifying payment:', paymentReference);
             
             const response = await axios.get(
-                `http://localhost:3000/api/payments/paystack/verify/${paymentReference}`,
+                `${backend_url}/api/payments/paystack/verify/${paymentReference}`,
                 {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -166,7 +168,7 @@ const PaystackPayment = ({ email, amount, orderId, onSuccess, onClose }) => {
         try {
             setLoading(true);
             // Update order payment method
-            await axios.put(`http://localhost:3000/api/orders/${orderId}`, {
+            await axios.put(`${backend_url}/api/orders/${orderId}`, {
                 paymentMethod: 'cash',
                 paymentStatus: 'pending'
             }, {

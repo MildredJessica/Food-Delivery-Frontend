@@ -14,6 +14,8 @@ const RestaurantDetail = () => {
   const { user, isAuthenticated } = useAuth();
   const { addToCart, cartCount } = useCart();
   const navigate = useNavigate();
+  const backend_url = import.meta.env.VITE_BACKEND_URL;
+
 
   useEffect(() => {
     fetchRestaurant();
@@ -24,7 +26,7 @@ const RestaurantDetail = () => {
 
   const fetchRestaurant = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/api/restaurants/${id}`);
+      const response = await axios.get(`${backend_url}/api/restaurants/${id}`);
       setRestaurant(response.data.data);
       setLoading(false);
     } catch (error) {
@@ -36,7 +38,7 @@ const RestaurantDetail = () => {
   const checkIfFavorite = async () => {    
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:3000/api/users/favorites', {
+      const response = await axios.get('${backend_url}/api/users/favorites', {
         headers: 
         {  'Authorization': `Bearer ${token}` 
         }
@@ -58,14 +60,14 @@ const RestaurantDetail = () => {
     try {
       const token = localStorage.getItem('token');
       if (isFavorite) {
-        await axios.delete(`http://localhost:3000/api/users/favorites/${id}`, {
+        await axios.delete(`${backend_url}/api/users/favorites/${id}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
         });
         setIsFavorite(false);
       } else {
-        await axios.post(`http://localhost:3000/api/users/favorites/${id}`, {}, {
+        await axios.post(`${backend_url}/api/users/favorites/${id}`, {}, {
           headers: {
             'Authorization': `Bearer ${token}`
           }

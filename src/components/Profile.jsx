@@ -21,6 +21,8 @@ const Profile = () => {
     },
     avatar: ''
   });
+  const backend_url = import.meta.env.VITE_BACKEND_URL;
+
 
   useEffect(() => {
     if (user) {
@@ -43,7 +45,7 @@ const Profile = () => {
 
   const fetchFavorites = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/api/users/favorites');
+      const response = await axios.get('${backend_url}/api/users/favorites');
       setFavorites(response.data.favorites);
     } catch (error) {
       console.error('Error fetching favorites:', error);
@@ -95,7 +97,7 @@ const Profile = () => {
 
     setLoading(true);
     try {
-      const response = await axios.put('http://localhost:3000/api/users/profile', formData, {
+      const response = await axios.put('${backend_url}/api/users/profile', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -114,7 +116,7 @@ const Profile = () => {
 
   const removeFromFavorites = async (restaurantId) => {
     try {
-      await axios.delete(`http://localhost:3000/api/users/favorites/${restaurantId}`);
+      await axios.delete(`${backend_url}/api/users/favorites/${restaurantId}`);
       setFavorites(favorites.filter(fav => fav._id !== restaurantId));
       setMessage({ type: 'success', text: 'Removed from favorites!' });
     } catch (error) {

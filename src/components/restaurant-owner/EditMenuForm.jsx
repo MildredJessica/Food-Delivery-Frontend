@@ -12,6 +12,8 @@ const EditMenuForm = ({ menuItem, restaurantId, onClose, onSuccess }) => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const backend_url = import.meta.env.VITE_BACKEND_URL;
+
 
   const categories = [
     'Appetizers',
@@ -83,7 +85,7 @@ const EditMenuForm = ({ menuItem, restaurantId, onClose, onSuccess }) => {
 
     try {
       const response = await axios.put(
-        `http://localhost:3000/api/restaurant-owner/${restaurantId}/menu/${menuItem._id}`,
+        `${backend_url}/api/restaurant-owner/${restaurantId}/menu/${menuItem._id}`,
         formData
       );
       

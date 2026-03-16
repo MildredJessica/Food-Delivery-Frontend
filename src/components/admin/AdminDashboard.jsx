@@ -21,6 +21,7 @@ const AdminDashboard = () => {
     recentActivities: []
   });
   const [loading, setLoading] = useState(true);
+  const backend_url = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
     if (user?.role !== 'admin') {
@@ -33,9 +34,9 @@ const AdminDashboard = () => {
   const fetchDashboardStats = async () => {
     try {
       const [usersRes, restaurantsRes, ordersRes] = await Promise.all([
-        axios.get('http://localhost:3000/api/admin/stats/users'),
-        axios.get('http://localhost:3000/api/admin/stats/restaurants'),
-        axios.get('http://localhost:3000/api/admin/stats/orders')
+        axios.get(`${backend_url}/api/admin/stats/users`),
+        axios.get(`${backend_url}/api/admin/stats/restaurants`),
+        axios.get(`${backend_url}/api/admin/stats/orders`)
       ]);
 
       setStats({

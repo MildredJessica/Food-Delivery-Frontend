@@ -19,6 +19,7 @@ export const useAuth = () => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [token, setToken] = useState(localStorage.getItem('token'));
+    const backend_url = import.meta.env.VITE_BACKEND_URL;
 
     // Initialize user from localStorage if available
     useEffect(() => {
@@ -49,7 +50,7 @@ export const useAuth = () => {
     const register = async (userData) => {
         try {
             console.log('Sending registration request:', userData); // Debug log
-            const response = await axios.post('http://localhost:3000/api/users/register', userData
+            const response = await axios.post(`${backend_url}/api/users/register`, userData
                 , {
               headers: {
                         'Content-Type': 'application/json'
@@ -79,7 +80,7 @@ export const useAuth = () => {
     // Login function
     const login = async (email, password) => {
         try {
-        const response = await axios.post('http://localhost:3000/api/users/login', {
+        const response = await axios.post(`${backend_url}/api/users/login`, {
             email,
             password
         });
@@ -117,7 +118,7 @@ export const useAuth = () => {
             window.dispatchEvent(new Event('cartUpdated'));
             // Call backend logout endpoint (optional)
             if (token)
-                await axios.post('http://localhost:3000/api/users/logout');
+                await axios.post(`${backend_url}/api/users/logout`);
         } catch (error) {
             console.error('Logout error:', error);
         } finally {
@@ -135,7 +136,7 @@ export const useAuth = () => {
     // Update profile function
     const updateProfile = async (profileData) => {
         try {
-        const response = await axios.put('http://localhost:3000/api/users/profile', profileData);
+        const response = await axios.put(`${backend_url}/api/users/profile`, profileData);
         setUser(response.data.user);
         return { success: true, data: response.data };
         } catch (error) {
@@ -149,7 +150,7 @@ export const useAuth = () => {
     // Change password function
     const changePassword = async (passwordData) => {
         try {
-        const response = await axios.put('http://localhost:3000/api/users/change-password', passwordData);
+        const response = await axios.put(`${backend_url}/api/users/change-password`, passwordData);
         setToken(response.data.token);
         return { success: true, data: response.data };
         } catch (error) {

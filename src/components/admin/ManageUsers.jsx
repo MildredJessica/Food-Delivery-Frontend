@@ -8,6 +8,7 @@ const ManageUsers = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedRole, setSelectedRole] = useState('all');
   const { user: currentUser } = useAuth();
+  const backend_url = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
     fetchUsers();
@@ -15,7 +16,7 @@ const ManageUsers = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/api/admin/users');
+      const response = await axios.get(`${backend_url}/api/admin/users`);
       setUsers(response.data.users);
     } catch (error) {
       console.error('Error fetching users:', error);
@@ -26,7 +27,7 @@ const ManageUsers = () => {
 
   const handleRoleChange = async (userId, newRole) => {
     try {
-      await axios.put(`http://localhost:3000/api/admin/users/${userId}/role`, { role: newRole });
+      await axios.put(`${backend_url}/api/admin/users/${userId}/role`, { role: newRole });
       fetchUsers();
     } catch (error) {
       console.error('Error updating role:', error);
@@ -35,7 +36,7 @@ const ManageUsers = () => {
 
   const handleStatusToggle = async (userId, currentStatus) => {
     try {
-      await axios.put(`http://localhost:3000/api/admin/users/${userId}/status`, {
+      await axios.put(`${backend_url}/api/admin/users/${userId}/status`, {
         isActive: !currentStatus
       });
       fetchUsers();
@@ -48,7 +49,7 @@ const ManageUsers = () => {
     if (!window.confirm('Are you sure you want to delete this user?')) return;
     
     try {
-      await axios.delete(`http://localhost:3000/api/admin/users/${userId}`);
+      await axios.delete(`${backend_url}/api/admin/users/${userId}`);
       fetchUsers();
     } catch (error) {
       console.error('Error deleting user:', error);

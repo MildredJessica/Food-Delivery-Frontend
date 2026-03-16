@@ -256,7 +256,7 @@ export const CartProvider = ({ children }) => {
           const menuItemIds = cartItems.map(item => item._id);
           
           // Fetch current menu items from database
-          const response = await axios.post('http://localhost:3000/api/menu/validate', {
+          const response = await axios.post(`${backend_url}/api/menu/validate`, {
             ids: menuItemIds
           });
     

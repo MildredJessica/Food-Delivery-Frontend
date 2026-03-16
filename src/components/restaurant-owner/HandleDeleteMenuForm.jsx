@@ -4,9 +4,10 @@ import toast from 'react-hot-toast';
 // Function to handle menu item deletion
 const handleDeleteMenuItem = async (restaurantId, menuItemId) => {
   if (!window.confirm('Are you sure you want to delete this menu item?')) return;
-  
+  const backend_url = import.meta.env.VITE_BACKEND_URL;
+
   try {
-    await axios.delete(`http://localhost:3000/api/restaurant-owner/${restaurantId}/menu/${menuItemId}`);
+    await axios.delete(`${backend_url}/api/restaurant-owner/${restaurantId}/menu/${menuItemId}`);
     // Refresh the page or update state
     window.location.reload();
   } catch (error) {

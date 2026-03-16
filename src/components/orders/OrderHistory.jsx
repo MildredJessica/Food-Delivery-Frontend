@@ -8,6 +8,8 @@ const OrderHistory = () => {
   const [loading, setLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState('all');
   const { user } = useAuth();
+  const backend_url = import.meta.env.VITE_BACKEND_URL;
+
 
   useEffect(() => {
     fetchOrders();
@@ -16,8 +18,8 @@ const OrderHistory = () => {
   const fetchOrders = async () => {
     try {
       const endpoint = user?.role === 'admin' 
-        ? 'http://localhost:3000/api/orders/all' 
-        : 'http://localhost:3000/api/orders/my-orders';
+        ? `${backend_url}/api/orders/all` 
+        : `${backend_url}/api/orders/my-orders`;
       
       const response = await axios.get(endpoint, {
         headers: {

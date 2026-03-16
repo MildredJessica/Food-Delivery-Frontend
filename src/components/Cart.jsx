@@ -28,6 +28,7 @@ const Cart = () => {
     clearCart 
   } = useCart();
   const navigate = useNavigate();
+  const backend_url = import.meta.env.VITE_BACKEND_URL;
 
   const getDeliveryFee = () => {
     return cartTotal > 20 ? 0 : 2.99;
@@ -113,7 +114,7 @@ const Cart = () => {
           promoCode: promoApplied ? promoCode : null
         };
         // console.log('Sending order data:', JSON.stringify(orderData, null, 2));
-        const response = await axios.post('http://localhost:3000/api/orders', orderData,{
+        const response = await axios.post(`${backend_url}api/orders`, orderData,{
             headers: {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -171,7 +172,7 @@ const Cart = () => {
   // Handle cash on delivery
   // const handleCashPayment = async (orderId) => {
   //   try {
-  //     await axios.post('http://localhost:3000/api/payments/confirm-cash', { orderId });
+  //     await axios.post('${backend_url}api/payments/confirm-cash', { orderId });
       
   //     // Clear cart
   //     clearCart();

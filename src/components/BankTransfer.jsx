@@ -9,6 +9,8 @@ const BankTransfer = ({ orderId, amount, onSuccess, onBack }) => {
   const [copied, setCopied] = useState({});
   const [timeLeft, setTimeLeft] = useState('');
   const navigate = useNavigate();
+  const backend_url = import.meta.env.VITE_BACKEND_URL;
+  
 
   useEffect(() => {
     fetchBankDetails();
@@ -24,7 +26,7 @@ const BankTransfer = ({ orderId, amount, onSuccess, onBack }) => {
   const fetchBankDetails = async () => {
     try {
       const response = await axios.post(
-        'http://localhost:3000/api/payments/paystack/bank-transfer',
+        `${backend_url}api/payments/paystack/bank-transfer`,
         { orderId }
       );
 
@@ -71,7 +73,7 @@ const BankTransfer = ({ orderId, amount, onSuccess, onBack }) => {
     const checkPayment = setInterval(async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/api/orders/${orderId}`
+          `${backend_url}api/orders/${orderId}`
         );
         
         if (response.data.order.paymentStatus === 'paid') {

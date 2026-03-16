@@ -17,7 +17,8 @@ const EditRestaurantForm = ({ restaurant, onClose, onSuccess }) => {
    });
    const [loading, setLoading] = useState(false);
    const [error, setError] = useState('');
- 
+   const backend_url = import.meta.env.VITE_BACKEND_URL;
+
    const compressImage = (file) => {
      return new Promise((resolve) => {
        const reader = new FileReader();
@@ -69,7 +70,7 @@ const EditRestaurantForm = ({ restaurant, onClose, onSuccess }) => {
      setLoading(true);
      try {
        const response = await axios.put(
-         `http://localhost:3000/api/restaurant-owner/${restaurant._id}`,
+         `${backend_url}/api/restaurant-owner/${restaurant._id}`,
          formData
        );
        if (response.data.success) {

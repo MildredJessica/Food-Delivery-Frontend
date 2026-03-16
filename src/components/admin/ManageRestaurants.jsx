@@ -7,6 +7,7 @@ const ManageRestaurants = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('all');
+  const backend_url = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
     fetchRestaurants();
@@ -14,7 +15,7 @@ const ManageRestaurants = () => {
 
   const fetchRestaurants = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/api/admin/restaurants');
+      const response = await axios.get(`${backend_url}/api/admin/restaurants`);
       setRestaurants(response.data.restaurants);
     } catch (error) {
       console.error('Error fetching restaurants:', error);
@@ -25,7 +26,7 @@ const ManageRestaurants = () => {
 
   const handleStatusToggle = async (restaurantId, currentStatus) => {
     try {
-      await axios.put(`http://localhost:3000/api/admin/restaurants/${restaurantId}/status`, {
+      await axios.put(`${backend_url}/api/admin/restaurants/${restaurantId}/status`, {
         isActive: !currentStatus
       });
       fetchRestaurants();
@@ -38,7 +39,7 @@ const ManageRestaurants = () => {
     if (!window.confirm('Are you sure you want to delete this restaurant?')) return;
     
     try {
-      await axios.delete(`http://localhost:3000/api/admin/restaurants/${restaurantId}`);
+      await axios.delete(`${backend_url}/api/admin/restaurants/${restaurantId}`);
       fetchRestaurants();
     } catch (error) {
       console.error('Error deleting restaurant:', error);

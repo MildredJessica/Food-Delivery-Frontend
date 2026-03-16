@@ -13,6 +13,7 @@ const PaymentSuccess = () => {
   const reference = searchParams.get('reference');
   const location = useLocation();
   const order = location.state?.order;
+  const backend_url = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
     if (reference)
@@ -26,7 +27,7 @@ const PaymentSuccess = () => {
   const verifyPayment = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/payments/paystack/verify/${reference}`
+        `${backend_url}/api/payments/paystack/verify/${reference}`
       );
 
       if (response.data.success) 

@@ -17,7 +17,7 @@ const RestaurantOwnerOrders = () => {
   const fetchRestaurantOrders = async () => {
     try {
       // Get orders for all restaurants owned by this user
-      const response = await axios.get('http://localhost:3000/api/orders/restaurant-owner', {
+      const response = await axios.get('${backend_url}/api/orders/restaurant-owner', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -33,7 +33,7 @@ const RestaurantOwnerOrders = () => {
 
   const handleStatusUpdate = async (orderId, newStatus) => {
     try {
-      await axios.put(`http://localhost:3000/api/orders/${orderId}/status`, 
+      await axios.put(`${backend_url}/api/orders/${orderId}/status`, 
         { status: newStatus },
         {
           headers: {

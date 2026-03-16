@@ -24,6 +24,8 @@ const CreateAdmin = () => {
   const [showAddress, setShowAddress] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
+  const backend_url = import.meta.env.VITE_BACKEND_URL;
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -89,7 +91,7 @@ const CreateAdmin = () => {
         }
       }
 
-      const response = await axios.post('http://localhost:3000/api/admin/create-admin', adminData);
+      const response = await axios.post(`${backend_url}/api/admin/create-admin`, adminData);
       
       setSuccess('Admin created successfully!');
       setFormData({

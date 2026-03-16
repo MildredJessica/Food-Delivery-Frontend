@@ -6,6 +6,7 @@ const RestaurantList = () => {
     const [restaurants, setRestaurants] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const backend_url = import.meta.env.VITE_BACKEND_URL;
 
     
 
@@ -13,7 +14,7 @@ const RestaurantList = () => {
         try {
             setLoading(true);
             setError(null);
-            const response = await axios.get('http://localhost:3000/api/restaurants');
+            const response = await axios.get(`${backend_url}/api/restaurants`);
             const restaurantsData = response.data.data || [];
             // console.log('Setting restaurants:', restaurantsData);
             setRestaurants(restaurantsData);
