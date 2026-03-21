@@ -190,8 +190,6 @@ const Cart = () => {
   const handlePaymentSuccess = (paymentData) => {
     // Clear cart after successful payment
     clearCart();
-    alert('Payment successful! Your order has been placed.');
-    navigate('/orders');
   };
   // Format currency
   const formatCurrency = (amount) => {

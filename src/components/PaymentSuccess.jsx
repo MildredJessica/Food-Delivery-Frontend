@@ -96,12 +96,12 @@ const PaymentSuccess = () => {
         )}
         
         <div className="flex space-x-4 justify-center">
-          <Link
-            to={handleViewOrders}
+          <button
+            onClick={handleViewOrders}
             className="bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600"
           >
             View Orders
-          </Link>
+          </button>
           <Link
             to="/"
             className="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600"
