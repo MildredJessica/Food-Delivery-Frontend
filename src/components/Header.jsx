@@ -69,11 +69,11 @@ const Header = () => {
                       <Link to="/orders" className={`text-sm font-medium pl-8 ${location.pathname === '/orders' ? 'text-orange-600' : 'text-gray-700 hover:text-orange-500'} transition-colors`}>
                         My Orders
                       </Link>
-                      {user?.role === 'restaurant_owner' && (
+                      {/* {user?.role === 'restaurant_owner' && (
                         <Link to="/restaurant-owner/dashboard" className="text-sm font-medium pl-8 text-gray-700 hover:text-orange-500 transition-colors">
                           Dashboard
                         </Link>
-                      )}
+                      )} */}
                       {user?.role === 'admin' && (
                         <Link to="/admin/dashboard" className={`text-sm font-medium pl-8 ${location.pathname.startsWith('/admin') ? 'text-orange-600'  : 'text-gray-700 hover:text-orange-500' } transition-colors`}>
                           Admin

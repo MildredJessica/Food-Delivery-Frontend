@@ -358,7 +358,7 @@ const Cart = () => {
                           </p>
                       )}
                     </div>
-                    <p className="text-gray-600">${(item.price || 0).toFixed(2)} each</p>
+                    <p className="text-gray-600">₦{(item.price || 0).toFixed(2)} each</p>
                     
                     <div className="flex items-center space-x-2 mt-2">
                       <button

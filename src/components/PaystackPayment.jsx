@@ -134,7 +134,7 @@ const PaystackPayment = ({ email, amount, orderId, onSuccess, onClose }) => {
                 toast.success('Payment successful! Your order has been confirmed.');
                 
                 // Navigate to Success page
-                navigate('/payment-success', {
+                navigate('/payment/success', {
                     state: {
                       order: { _id: orderId },
                         reference: response.reference

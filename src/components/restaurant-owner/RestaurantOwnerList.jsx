@@ -66,7 +66,7 @@ const RestaurantOwnerList = ({
                             <div key={item._id || index} className="flex justify-between items-center text-sm bg-gray-50 p-2 rounded">
                                 <div>
                                 <span className="font-medium">{item.name}</span>
-                                <span className="text-gray-500 ml-2">${item.price?.toFixed(2)}</span>
+                                <span className="text-gray-500 ml-2">₦{item.price?.toFixed(2)}</span>
                                 </div>
                                 <div className="flex space-x-2">
                                 <button
