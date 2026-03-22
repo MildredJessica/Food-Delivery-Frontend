@@ -203,7 +203,7 @@ const RestaurantDetail = () => {
                                         )} */}
                                     </div>
                                     <p className="text-gray-600 text-sm mt-1">{item.description}</p>
-                                    <p className="text-green-600 font-semibold mt-2">${item.price?.toFixed(2)}</p>
+                                    <p className="text-green-600 font-semibold mt-2">₦{item.price?.toFixed(2)}</p>
                                 </div>
                             
                                 <button
