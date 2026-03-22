@@ -39,7 +39,7 @@ const AppRoutes = () => {
             } 
           />
           <Route 
-            path="/orders/" 
+            path="/orders" 
             element={
               <ProtectedRoute>
                 {user?.role === 'restaurant_owner' 
