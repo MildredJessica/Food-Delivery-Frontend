@@ -3,6 +3,7 @@ import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
 import RestaurantOwnerList from './RestaurantOwnerList.jsx';
 import AddRestaurantForm from './AddRestaurantForm.jsx';
+import RestaurantOwnerOrders from '../orders/RestaurantOwnerOrders.jsx';
 
 const RestaurantOwnerDashboard = () => {
   const { user } = useAuth();
@@ -150,7 +151,7 @@ const RestaurantOwnerDashboard = () => {
               setEditMenuItemData={setEditMenuItemData}
             />
           )}
-          {activeTab === 'orders' && <OrderList />}
+          {activeTab === 'orders' && <RestaurantOwnerOrders />}
           {activeTab === 'analytics' && <Analytics />}
         </div>
       </div>
@@ -170,16 +171,7 @@ const RestaurantOwnerDashboard = () => {
 };
 
 
-// Order List Component (Placeholder)
-const OrderList = () => {
-  return (
-    <div className="text-center py-12">
-      <div className="text-6xl mb-4">📦</div>
-      <h3 className="text-xl font-semibold text-gray-700 mb-2">No orders yet</h3>
-      <p className="text-gray-500">Orders will appear here when customers place them.</p>
-    </div>
-  );
-};
+
 
 // Analytics Component (Placeholder)
 const Analytics = () => {
