@@ -9,6 +9,7 @@ const RestaurantOwnerOrders = () => {
   const [loading, setLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState('all');
   const [selectedRestaurant, setSelectedRestaurant] = useState('all');
+  const backend_url = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
     fetchRestaurantOrders();
